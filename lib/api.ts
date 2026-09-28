@@ -10,7 +10,7 @@ function isProduct(value: unknown): value is Product {
   return typeof p.id === "number" && typeof p.title === "string" && typeof p.price === "number" && typeof p.description === "string" && typeof p.category === "string" && typeof p.image === "string" && validRating;
 }
 async function request(path: string): Promise<unknown> {
-  const response = await fetch(`${API_URL}${path}`, { next: { revalidate: 300 } });
+  const response = await fetch(`${API_URL}${path}`, {  cache: "no-store" });
   if (!response.ok) throw new Error(`Product service returned ${response.status}`);
   return response.json() as Promise<unknown>;
 }
