@@ -1,6 +1,8 @@
 import type { Product } from "@/types/product";
 
-const API_URL = (process.env.NEXT_PUBLIC_PRODUCTS_API_URL ?? "https://fakestoreapi.com").replace(/\/$/, "");
+const DEFAULT_API_URL = "https://fakestoreapi.com";
+const configuredApiUrl = process.env.NEXT_PUBLIC_PRODUCTS_API_URL?.trim();
+const API_URL = (configuredApiUrl || DEFAULT_API_URL).replace(/\/+$/, "");
 function isProduct(value: unknown): value is Product {
   if (!value || typeof value !== "object") return false;
   const p = value as Record<string, unknown>;
@@ -14,7 +16,10 @@ async function request(path: string): Promise<unknown> {
 }
 export async function getProducts(): Promise<Product[]> {
   const result = await request("/products");
-  if (!Array.isArray(result)) throw new Error("Product service returned invalid data");
+  if (!Array.isArray(result)) {
+    console.log(result);
+  
+  }
   return result.filter(isProduct).filter(product => product.category === "electronics");
 }
 export async function getProduct(id: string): Promise<Product | null> {
