@@ -1,20 +1,45 @@
-export const dynamic = "force-dynamic";
+"use client";
+//export const dynamic = "force-dynamic";
+
 import { getProducts } from "@/lib/api";
 import { ProductBrowser } from "@/components/ProductBrowser";
 import { EmptyProducts, ErrorState } from "@/components/States";
-export const revalidate = 300;
-export default async function HomePage() {
-  let products;
-  try {
-    products = await getProducts();
-  } catch (error) {
-    console.error("TechStore product collection request failed:", error);
-    return (
-      <main className="main-wrap">
-        <ErrorState message="Our product collection is temporarily unavailable. Please try again." />
-      </main>
-    );
-  }
+import { use, useEffect, useState } from "react";
+import { Product } from "@/types/product";
+
+export default  function HomePage() {
+//   let products;
+//   try {
+//     products = await getProducts();
+//   } catch (error) {
+//     console.error("TechStore product collection request failed:", error);
+//     return (
+//       <main className="main-wrap">
+//         <ErrorState message="Our product collection is temporarily unavailable. Please try again." />
+//       </main>
+//     );
+//   }
+const [products, setProducts] = useState<Product[]>([]);
+const [error, setError] = useState<string | null>(null);
+
+
+useEffect(() => {
+    const fetchProducts = async () => {
+        try {
+            const products = await fetch("https://fakestoreapi.com/products").then(res => res.json());
+            console.log("Fetched products:", products);
+            setProducts(products);
+        } catch (error) {
+            console.error("TechStore product collection request failed:", error);
+            setError("Our product collection is temporarily unavailable. Please try again.");
+        }
+    };
+
+    fetchProducts();
+}, []);
+
+
+
   return (
     <main className="main-wrap">
       <section className="hero">
@@ -77,3 +102,5 @@ export default async function HomePage() {
     </main>
   );
 }
+
+
