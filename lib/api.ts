@@ -17,7 +17,9 @@ async function request(path: string): Promise<unknown> {
 export async function getProducts(): Promise<Product[]> {
   const result = await request("/products");
   if (!Array.isArray(result)) {
-    console.log(result);
+    console.log
+    (result);
+    throw new Error("Product service returned invalid data");
   
   }
   return result.filter(isProduct).filter(product => product.category === "electronics");
